@@ -13,11 +13,13 @@
     "grunt-contrib-copy": "^0.7.0",
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-conventional-changelog": "~1.2.0",
     "grunt-ddescribe-iit": "0.0.6",
     "grunt-exec": "^0.4.6",
     "grunt-git": "^0.3.5",
     "grunt-karma": "0.12.0",
     "grunt-newer": "^1.1.0",
+    "grunt-release": "~0.13.0",
     "grunt-search": "^0.1.7",
     "grunt-string-replace": "^1.2.0",
     "grunt-wiredep": "^2.0.0",
@@ -32,7 +34,8 @@
     "load-grunt-tasks": "^3.1.0",
     "semver": "~4.3.1",
     "shelljs": "^0.5.1",
-    "time-grunt": "^1.0.0"
+    "time-grunt": "^1.0.0",
+    "fs-extra": "^0.20.1"
   },
   "engines": {
     "node": ">=0.10.0"
