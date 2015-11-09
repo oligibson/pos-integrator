@@ -6,6 +6,7 @@
 // 'test/spec/{,*/}*.js'
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
+var fs = require('fs-extra');
 
 module.exports = function (grunt) {
 
@@ -164,16 +165,16 @@ module.exports = function (grunt) {
         changelog: {
             options: {
                 dest: 'CHANGELOG.md',
-                versionFile: 'package.json'
+                versionFile: 'bower.json'
             }
         },
         'contrib-release': {
             options: {
                 commitMessage: '<%= version %>',
-                tagName: 'v<%= version %>',
+                tagName: '<%= version %>',
                 bump: false, // we have our own bump
                 npm: false,
-                file: 'package.json'
+                file: 'bower.json'
             }
         },
         stage: {
@@ -193,9 +194,20 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-git');
+    grunt.loadNpmTasks('grunt-string-replace');
+
+    grunt.registerTask('stage', 'git add files before running the release task', function () {
+        var files = this.options().files;
+        grunt.util.spawn({
+            cmd: process.platform === 'win32' ? 'git.cmd' : 'git',
+            args: ['add'].concat(files)
+        }, grunt.task.current.async());
+    });
+
     grunt.registerTask('bump', 'bump manifest version', function (type) {
         var options = this.options({
-            file: grunt.config('bower') || 'bower.json'
+            file: 'bower.json'
         });
 
         function setup(file, type) {
@@ -219,8 +231,8 @@ module.exports = function (grunt) {
                     options: {
                         replacements: [
                             {
-                                pattern: new RegExp("generator-po-microservice.git#v" + oldVersion, "i"),
-                                replacement: 'generator-po-microservice.git#v' + newVersion
+                                pattern: new RegExp("ssh://git@po.toolbox:7999/cm/pos-integrator.git#~" + oldVersion, "i"),
+                                replacement: 'ssh://git@po.toolbox:7999/cm/pos-integrator.git#~' + newVersion
                             }
                         ]
                     }
@@ -229,6 +241,16 @@ module.exports = function (grunt) {
             grunt.task.run('string-replace');
             grunt.log.ok('replaced readme version ' + oldVersion + ' with ' + newVersion);
         }
+
+        function writeCurrentVersionToFile(version) {
+            fs.writeFileSync('.currentversion', 'VERSION=' + version);
+        }
+
+        var config = setup(options.file, type);
+        grunt.file.write(config.file, JSON.stringify(config.pkg, null, '  ') + '\n');
+        replaceReadmeVersion(config.oldVersion, config.newVersion);
+        writeCurrentVersionToFile(config.newVersion);
+        grunt.log.ok('Version bumped to ' + config.newVersion);
     });
 
 
