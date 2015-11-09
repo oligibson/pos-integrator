@@ -21,7 +21,11 @@
     "bower_components",
     "demo",
     "tests",
-    "misc"
+    "misc",
+    "reports",
+    "package.json",
+    "Gruntfile.js",
+    "karma.conf.js"
   ],
   "private": true,
   "devDependencies": {

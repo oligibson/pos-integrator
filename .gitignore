@@ -1,12 +1,10 @@
 node_modules/
 bower_components/
+reports/
 
 #idea
 .idea
 *iml
-
-#tests
-testResults.xml
 
 ####eclipse
 .project
