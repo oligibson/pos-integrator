@@ -1,0 +1,30 @@
+{
+  "name": "pos-integrator",
+  "version": "0.0.0",
+  "authors": [
+    "Oliver Gibson <oliver.gibson@uk.ibm.com>"
+  ],
+  "description": "Angular module for integrating with POS Controller",
+  "moduleType": [
+    "globals"
+  ],
+  "main": [
+    "src/posIntegrator.js"
+  ],
+  "dependencies": {
+    "angular": "~1.4.0"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "demo",
+    "tests",
+    "misc"
+  ],
+  "private": true,
+  "devDependencies": {
+    "angular-mocks": "~1.4.7"
+  }
+}

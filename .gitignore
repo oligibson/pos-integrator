@@ -1,0 +1,21 @@
+node_modules/
+bower_components/
+
+#idea
+.idea
+*iml
+
+#tests
+testResults.xml
+
+####eclipse
+.project
+.metadata
+
+##eclipse properties
+#project.properties
+/.npmignore
+/.settings
+#
+
+.DS_Store
