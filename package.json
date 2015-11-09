@@ -14,6 +14,7 @@
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-conventional-changelog": "~1.2.0",
+    "grunt-string-replace": "^1.2.0",
     "grunt-ddescribe-iit": "0.0.6",
     "grunt-exec": "^0.4.6",
     "grunt-git": "^0.3.5",
