@@ -4,6 +4,8 @@ function $posProvider(){
 
     var posCtrlURI = '*';
 
+    var devMode = false;
+
     this.routePOSCtrlMessage = function (event) {
         console.log(event.data.messageType);
         var publisherData = event.data;
@@ -48,11 +50,17 @@ function $posProvider(){
     };
 
     function sendMessage(message) {
-        parent.postMessage(message, posCtrlURI);
+        if(devMode){
+            console.info('Mock Message Sent to POS Controller in Development Mode. Message:', message);
+        }else{
+            parent.postMessage(message, posCtrlURI);
+        }
     }
 
-    this.init = function() {
-        console.log('POS Integrator Initiated');
+    this.init = function(dev) {
+        if(dev){
+            devMode = dev;
+        }
         if (window.addEventListener) {
             window.addEventListener('message', this.routePOSCtrlMessage, false);
         }
@@ -67,7 +75,6 @@ function $posProvider(){
     function $get(){
         return {
             dismiss: function(){
-                console.log('Dismiss');
                 var message = {
                     messageType: 'Dismiss'
                 };
