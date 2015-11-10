@@ -108,7 +108,7 @@ describe('Mock Incoming Messages', function () {
 
   beforeEach(module('pos.integrator', function ($posProvider) {
     provider = $posProvider;
-    incomingMessageSpy = spyOn(provider, 'routePOSCtrlMessage');
+    incomingMessageSpy = spyOn(provider, 'routePOSCtrlMessage').andCallThrough();
   }));
 
   beforeEach(inject(function () {}));
