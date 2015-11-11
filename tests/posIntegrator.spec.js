@@ -89,7 +89,47 @@ describe('POS Integrator outbound functions', function () {
 
 });
 
-fdescribe('Message', function () {
+describe('Get Scale Weights', function () {
+
+    var pos, provider, incomingMessageSpy;
+
+    // Get the provider
+    beforeEach(module('pos.integrator', function ($posProvider) {
+        // This callback is only called during instantiation
+        provider = $posProvider;
+    }));
+
+    // Kick off the above function
+    beforeEach(inject(function ($pos) {
+        pos = $pos;
+    }));
+
+    beforeEach(function () {
+        incomingMessageSpy = spyOn(provider, 'routePOSCtrlMessage').and.callThrough();
+    });
+
+    fit('Should send a message to POS Controller and receive a response', function(){
+        pos.getWeight(function(err, res){
+            if(err){
+                console.log(err);
+            }
+            console.log(res);
+            expect(res).toBeDefined();
+        });
+
+        var message = {data: {messageType: 'ReadScaleResponse', correlationID: '987654321'}};
+        provider.routePOSCtrlMessage(message);
+        expect(incomingMessageSpy).toHaveBeenCalled();
+    })
+
+    it('should call routePOSCtrlMessage', function () {
+        var message = {data: {messageType: 'ReadScaleResponse', correlationID: '123456789'}};
+        provider.routePOSCtrlMessage(message);
+        expect(incomingMessageSpy).toHaveBeenCalled();
+    });
+});
+
+describe('Message', function () {
 
     var spy, pos;
 
