@@ -9,7 +9,7 @@ The Post Office POS Integrator Component is a Bower component that provides a wr
 You can install this package with bower.
 
 ```
-bower install git+ssh://git@po.toolbox:7999/cm/pos-integrator.git#~0.0.2  
+bower install git+ssh://git@po.toolbox:7999/cm/pos-integrator.git#~0.0.4 --save  
 ```
 Add a `<script>` to your `index.html`:
 
@@ -65,6 +65,49 @@ var items = [{
 $pos.addItem(items);
 ```
 
+### Print Receipt
+
+Sends a message to the POS Controller to print a receipt or document. The print function (`$pos.print(station, logo, storeInfo, tasks, callback)`) takes the following parameters:
+
+* `station` - **String** - Can be either `"Receipt"` or `"Document"`.
+* `logo` - **Boolean** - `true` will add the logo to the Receipt and `false` will remove it.
+* `storeInfo`:  - **Boolean** - `true` will add the logo to the Receipt and `false` will remove it.
+* `tasks`: - **Array** - Contains objects for each receipt line. e.g:
+
+	```
+[{
+	"Type":"printLine",
+	"Text":"Hello World 1"
+},
+{	"Type":"printImage",    "ImageNumber":"2"},{	"Type":"printBarcode",    "BarcodeType":"CODE128",    "BarcodeValue":"1234567890"}]
+	```
+
+* `callback` - **Function** - Must take `error` and `response` parameters.
+
+Below is an example call to `$pos.print()`.
+
+
+```
+var tasks = [{               "Type":"printLine",               "Text":"Hello World 1"             },       		{         		"Type":"printImage",         		"ImageNumber":"2"       		}];       		
+$pos.print("Receipt", true, false, tasks, function(error, response){
+	if (!err) {
+    	console.log(response);
+  	}
+});
+```
+
+### Get Weight
+
+Sends a message to the POS Controller to request the weight from the scales attached to the Toshiba Gravity POS System. The function takes a callback function which should handle the weight response from Toshiba Gravity. The callback function should take two paramters `error` and `response`.
+
+```
+$pos.getWeight(function(error, response){
+	if (!err) {
+    	console.log(response);
+  	}
+});
+```
+
 ### Collect Info Response
 
 Sends a message to the POS Controller in response to a `collectInfoRequest` sent by Toshiba Gravity.  The function takes two params. `id` which is a string containing the correlation id that would be provided in a `collectInfoRequest` and `response` which is an object that will include the message details to be returned to Toshiba Gravity.
@@ -79,6 +122,7 @@ var response = {
 	
 $pos.collectInfoResponse(id, response);
 ```
+
 
 ## Testing Microservice Integration
 -----------------------------------
