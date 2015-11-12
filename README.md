@@ -148,10 +148,11 @@ Incoming messages to the microservice can be mocked by calling the POS Integrato
 ```
 describe('Mock Incoming Messages', function () {
 
-  var provider, incomingMessageSpy;
+  var provider, router, incomingMessageSpy;
 
-  beforeEach(module('pos.integrator', function ($posProvider) {
+  beforeEach(module('pos.integrator', function ($posProvider,$routerProvider) {
     provider = $posProvider;
+    router = $routerProvider;
     incomingMessageSpy = spyOn(provider, 'routePOSCtrlMessage').andCallThrough();
   }));
 
@@ -160,9 +161,43 @@ describe('Mock Incoming Messages', function () {
   it('should call routePOSCtrlMessage', function () {
   	// This is an example message
     var message = {data: {messageType: 'SignOn'}};
-    provider.routePOSCtrlMessage(message);
+    provider.routePOSCtrlMessage(message, router.spec);
     expect(incomingMessageSpy).toHaveBeenCalled();
   });
 });
 ```
+### Example Incoming Messages
 
+Below are example incoming messages that you may need to mock. These are for messages that will be sent from Toshiba Gravity without initiation from the microservice.
+
+***Important***: `*** Common fields ***` are yet to be defined, do not include them in your current message testing.
+
+#### Sign On
+
+```
+{  "messageType":"SignOn",  *** Common fields ***  "details": {    "welshLanguage":"false"   }}
+```
+
+#### Sign Off
+
+```
+{  "messageType":"SignOff",  *** Common fields ***}
+```
+
+#### Barcode Scan
+
+```
+{  "messageType":"Barcode",  *** Common fields ***  "details": {    "barcodeType":" CODE128",    "barcodeData":"1234567890"  }}
+```
+
+#### Status Message
+
+```
+{  "messageType":" StatusMessage",  *** Common fields ***  "details": {    "statusCode":"processing",    "text":"Processing…",    "canRequestCancel":"false"  }}
+```
+
+#### Collect Information Request
+
+```
+{  "messageType":" CollectInformationRequest",  "correlationID":"123456789",  *** Common fields ***  "details": {    "collectionType":"VATCustomerInfo"  }}
+```
