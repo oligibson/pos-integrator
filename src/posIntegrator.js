@@ -1,95 +1,86 @@
 'use strict'
 
-var $routerSpec =  {
-    SignOn: {
-        messageType: 'SignOn',
-        execute: function(){
-            console.log('Sign On message received');
-        }
-    },
-    SignOff: {
-        messageType: 'SignOff',
-        execute: function(){
-            console.log('SignOff message received');
-        }
-    },
-    Barcode: {
-        messageType: 'Barcode',
-        execute: function(){
-            console.log('Barcode message received');
-        }
-    },
-    ReadScaleResponse: {
-        messageType: 'ReadScaleResponse',
-        messagesAwaitingResponse: [],
-        execute: function(publisherData){
-            if(this.messagesAwaitingResponse.length > 0){
-                var found = false;
-                for(var i=0; i < this.messagesAwaitingResponse.length; i++){
-                    if(this.messagesAwaitingResponse[i].id === publisherData.correlationID){
-                        found = true;
-                        // There is no proper error handling here to catch any errors sent by gravity or handling a timeout if no response is sent
-                        this.messagesAwaitingResponse[i].callback(null, publisherData);
-                        this.messagesAwaitingResponse.splice(i, 1);
-                        break;
-                    }
+function $routerProvider(){
+
+    function genericEventRouter(publisherData, spec){
+        console.log(spec.messageType + ' message received');
+        console.log('Message Received: ', publisherData);
+    }
+
+    function asyncRouter(publisherData, spec){
+        if(spec.messagesAwaitingResponse.length > 0){
+            var found = false;
+            for(var i=0; i < spec.messagesAwaitingResponse.length; i++){
+                if(this.messagesAwaitingResponse[i].id === publisherData.correlationID){
+                    found = true;
+                    // There is no proper error handling here to catch any errors sent by gravity or handling a timeout if no response is sent
+                    spec.messagesAwaitingResponse[i].callback(null, publisherData);
+                    spec.messagesAwaitingResponse.splice(i, 1);
+                    break;
                 }
-                if(found != true){ console.warn('ReadScaleResponse could not be handled')}
-            }else{
-                console.warn('ReadScaleResponse could not be handled');
             }
-        }
-    },
-    PrintJobResponse: {
-        messageType: 'PrintJobResponse',
-        messagesAwaitingResponse: [],
-        execute: function(publisherData){
-            if(this.messagesAwaitingResponse.length > 0){
-                var found = false;
-                for(var i=0; i < this.messagesAwaitingResponse.length; i++){
-                    if(this.messagesAwaitingResponse[i].id === publisherData.correlationID){
-                        found = true;
-                        // There is no proper error handling here to catch any errors sent by gravity or handling a timeout if no response is sent
-                        this.messagesAwaitingResponse[i].callback(null, publisherData);
-                        this.messagesAwaitingResponse.splice(i, 1);
-                        break;
-                    }
-                }
-                if(found != true){ console.warn('PrintJobResponse could not be handled')}
-            }else{
-                console.warn('PrintJobResponse could not be handled');
-            }
-        }
-    },
-    StatusMessage: {
-        messageType: 'StatusMessage',
-        execute: function () {
-            console.log('StatusMessage message received');
-        }
-    },
-    CollectInformationRequest: {
-        messageType: 'CollectInformationRequest',
-        execute: function(){
-            console.log('CollectInformationRequest message received');
+            if(found != true){ console.warn(spec.messageType + ' could not be handled')}
+        }else{
+            console.warn(spec.messageType + ' could not be handled');
         }
     }
-};
 
-function $posProvider(){
+    this.spec =  {
+        SignOn: {
+            messageType: 'SignOn',
+            execute: genericEventRouter
+        },
+        SignOff: {
+            messageType: 'SignOff',
+            execute: genericEventRouter
+        },
+        Barcode: {
+            messageType: 'Barcode',
+            execute: genericEventRouter
+        },
+        ReadScaleResponse: {
+            messageType: 'ReadScaleResponse',
+            messagesAwaitingResponse: [],
+            execute: asyncRouter
+        },
+        PrintJobResponse: {
+            messageType: 'PrintJobResponse',
+            messagesAwaitingResponse: [],
+            execute: asyncRouter
+        },
+        StatusMessage: {
+            messageType: 'StatusMessage',
+            execute: genericEventRouter
+        },
+        CollectInformationRequest: {
+            messageType: 'CollectInformationRequest',
+            execute: genericEventRouter
+        }
+    };
+
+    var that = this;
+    this.$get = $get;
+    function $get(){
+        return {
+            spec: that.spec
+        };
+    }
+}
+
+angular.module('pos.integrator.util', []).provider('$router', $routerProvider);
+
+$posProvider.$inject = ['$routerProvider'];
+function $posProvider($routerProvider){
 
     var posCtrlURI = '*';
-
     var devMode = false;
 
-    this.routePOSCtrlMessage = function (event) {
-
-        var router = $routerSpec;
-
+    this.routePOSCtrlMessage = function (event, router) {
         var publisherData = event.data;
         if (typeof publisherData === 'object' && publisherData.messageType) {
             for(var key in router){
                 if(router[key].messageType === publisherData.messageType){
-                    router[key].execute(publisherData);
+                    router[key].execute(publisherData, router[key]);
                     break;
                 }
             }
@@ -104,12 +95,15 @@ function $posProvider(){
         }
     }
 
+    var that = this;
     this.init = function(dev) {
         if(dev){
             devMode = dev;
         }
         if (window.addEventListener) {
-            window.addEventListener('message', this.routePOSCtrlMessage, false);
+            window.addEventListener('message', function(){
+                that.routePOSCtrlMessage(this.event, $routerProvider.spec);
+            }, false);
         }
         var message = {
             messageType: 'InitMicroservice'
@@ -117,9 +111,9 @@ function $posProvider(){
         sendMessage(message);
     };
 
-
     this.$get = $get;
-    function $get(){
+    $get.$inject = ['$router'];
+    function $get($router){
 
         var callBackListener = function(id, callback){
             this.id = id;
@@ -165,16 +159,16 @@ function $posProvider(){
             },
             getWeight: function(callback){
                 var message = new messageBuilder("ReadScaleRequest", parseInt(Math.random()*1000000000, 10).toString(), {"timeoutMillis":"3000"});
-                $routerSpec.ReadScaleResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
+                $router.spec.ReadScaleResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
                 sendMessage(message);
             },
             print: function(station, logo, storeInfo, tasks, callback){
                 var message = new printJobBuilder("PrintJobResponse", parseInt(Math.random()*1000000000, 10).toString(), {"station": station}, logo,  storeInfo, tasks);
-                $routerSpec.PrintJobResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
+                $router.spec.PrintJobResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
                 sendMessage(message);
             }
         };
     }
 }
 
-angular.module('pos.integrator', []).provider('$pos', $posProvider);
+angular.module('pos.integrator', ['pos.integrator.util']).provider('$pos', $posProvider);
