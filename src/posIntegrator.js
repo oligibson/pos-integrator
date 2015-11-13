@@ -116,6 +116,7 @@ function $posProvider($routerProvider){
         sendMessage(message);
     };
 
+    that = this;
     this.$get = $get;
     $get.$inject = ['$router'];
     function $get($router){
@@ -130,6 +131,12 @@ function $posProvider($routerProvider){
             if(id != undefined){this.correlationID = id;}
             if(details != undefined){this.details = details;}
         };
+
+        var mockMessageBuilder = function(type, id){
+            messageBuilder.call(this, type, id, {"status":"success"});
+            if(type === "ReadScaleResponse"){this.details.weight = "10.500";}
+        };
+        mockMessageBuilder.prototype = new messageBuilder();
 
         var printJobBuilder = function(type, id, details, logo, storeInfo, tasks){
             messageBuilder.call(this, type, id, details);
@@ -149,16 +156,23 @@ function $posProvider($routerProvider){
         };
         printJobBuilder.prototype = new messageBuilder();
 
+        var asyncMock = function(type, id){
+            var event = {data: new mockMessageBuilder(type, id)};
+            setTimeout(function(){
+                that.routePOSCtrlMessage(event, $router.spec);
+            }, 1000);
+        };
+
         return {
             dismiss: function(){
                 var message = new messageBuilder("Dismiss");
                 sendMessage(message);
             },
-            addItem: function (items) {
+            addItem: function(items) {
                 var message = new messageBuilder("AddItem", undefined, {"items": {"item": items}});
                 sendMessage(message);
             },
-            collectInfoResponse: function (id, response) {
+            collectInfoResponse: function(id, response) {
                 var message = new messageBuilder("CollectInformationResponse", id, response);
                 sendMessage(message);
             },
@@ -166,11 +180,13 @@ function $posProvider($routerProvider){
                 var message = new messageBuilder("ReadScaleRequest", parseInt(Math.random()*1000000000, 10).toString(), {"timeoutMillis":"3000"});
                 $router.spec.ReadScaleResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
                 sendMessage(message);
+                if(devMode){asyncMock("ReadScaleResponse", message.correlationID);}
             },
             print: function(station, logo, storeInfo, tasks, callback){
-                var message = new printJobBuilder("PrintJobResponse", parseInt(Math.random()*1000000000, 10).toString(), {"station": station}, logo,  storeInfo, tasks);
+                var message = new printJobBuilder("PrintJobRequest", parseInt(Math.random()*1000000000, 10).toString(), {"station": station}, logo,  storeInfo, tasks);
                 $router.spec.PrintJobResponse.messagesAwaitingResponse.push(new callBackListener(message.correlationID, callback));
                 sendMessage(message);
+                if(devMode){asyncMock("PrintJobResponse", message.correlationID);}
             }
         };
     }
