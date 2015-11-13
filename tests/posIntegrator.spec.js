@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Init', function () {
+fdescribe('Init', function () {
     var provider, initSpy, outgoingSpy;
 
     // Get the provider
@@ -12,14 +12,14 @@ describe('Init', function () {
     // Kick off the above function
     beforeEach(inject(function () {}));
 
-    beforeEach(function(done){
-        initSpy = spyOn(provider, 'init');
-        outgoingSpy = spyOn(parent, 'postMessage');
-        done();
-    });
+    //beforeEach(function(done){
+    //    initSpy = spyOn(provider, 'init');
+    //    outgoingSpy = spyOn(parent, 'postMessage');
+    //    done();
+    //});
 
     beforeEach(function(done){
-        provider.init();
+        provider.init('http://pos.com');
         done();
     });
 
@@ -126,7 +126,7 @@ describe('Get Scale Weights', function () {
         incomingMessageSpy = spyOn(provider, 'routePOSCtrlMessage').and.callThrough();
     });
 
-    fit('Should send a message to POS Controller and receive a response', function(){
+    it('Should send a message to POS Controller and receive a response', function(){
         pos.getWeight(function(err, res){
             if(err){
                 console.log(err);

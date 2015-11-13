@@ -1,5 +1,5 @@
 # Post Office POS Integrator Component
-=============================
+--------------------------------------
 
 The Post Office POS Integrator Component is a Bower component that provides a wrapper for the HTML5 iFrame messaging to the POS Controller.
 
@@ -26,12 +26,12 @@ angular.module('myApp', ['pos.integrator']);
 ## Initialisation
 -----------------
 
-After installing the package you need to initialise the POS Integrator to allow it to listen for messages from the POS Controller and confirm the Microservice has launched successfully.
+After installing the package you need to initialise the POS Integrator to allow it to listen for messages from the POS Controller and confirm the Microservice has launched successfully. `$posProvider.init(posURL,devMode)` takes two parameters, `posURL` is a URL string for the POS Controller you want to message that must always be provided and `devMode`is an optional boolean value where `true` will allow the POS Integrator to mock messages to and from Toshiba Gravity.
 
 ```
 App.config(function($posProvider) {
   
-  $posProvider.init();
+  $posProvider.init('http://poscontroller.com');
   
 });
 ```

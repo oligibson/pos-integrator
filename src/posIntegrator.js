@@ -72,7 +72,7 @@ angular.module('pos.integrator.util', []).provider('$router', $routerProvider);
 $posProvider.$inject = ['$routerProvider'];
 function $posProvider($routerProvider){
 
-    var posCtrlURI = '*';
+    var posCtrlURI;
     var devMode = false;
 
     this.routePOSCtrlMessage = function (event, router) {
@@ -96,10 +96,15 @@ function $posProvider($routerProvider){
     }
 
     var that = this;
-    this.init = function(dev) {
+    this.init = function(posURL, dev) {
+        // This should probably throw an error if no string is provided rather than setting to *
+        typeof posURL === 'string' ? posCtrlURI = posURL : posCtrlURI = '*';
+
         if(dev){
             devMode = dev;
+            posCtrlURI = '*';
         }
+
         if (window.addEventListener) {
             window.addEventListener('message', function(){
                 that.routePOSCtrlMessage(this.event, $routerProvider.spec);
