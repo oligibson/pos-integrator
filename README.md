@@ -3,6 +3,13 @@
 
 The Post Office POS Integrator Component is a Bower component that provides a wrapper for the HTML5 iFrame messaging to the POS Controller.
 
+## Still To DO
+--------------
+* Write methods for microservice to listen for gravity messages
+* Write unit tests to get coverage above 80%
+* Write a build pipeline
+
+
 ## Install
 ----------
 
