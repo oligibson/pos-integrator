@@ -286,7 +286,7 @@ module.exports = function (grunt) {
     //    'build-docs'
     //]);
 
-    grunt.task.renameTask('release', 'contrib-release')
+    grunt.task.renameTask('release', 'contrib-release');
     grunt.registerTask('release', function (type) {
         type = type === 'minor' || type === 'major' ? type : 'patch';
         grunt.task.run([
