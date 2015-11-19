@@ -1,6 +1,7 @@
 node_modules/
 bower_components/
 reports/
+build-pipeline-config/
 
 #idea
 .idea
@@ -14,6 +15,7 @@ reports/
 #project.properties
 /.npmignore
 /.settings
+
 #
 
 .DS_Store

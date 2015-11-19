@@ -90,8 +90,8 @@ module.exports = function(config) {
 
     coverageReporter: {
       reporters: [
-        // reporters not supporting the `file` property
-        { type: 'html', dir: 'reports/' },
+        { type: 'lcov', dir: 'reports/', subdir: 'coverage'},
+        { type: 'cobertura', dir: 'reports/',  subdir: 'coverage', file: 'coverage.xml'},
         { type: 'text-summary' }
       ]
     }
