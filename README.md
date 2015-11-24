@@ -16,7 +16,7 @@ The Post Office POS Integrator Component is a Bower component that provides a wr
 You can install this package with bower.
 
 ```
-bower install git+ssh://git@po.toolbox:7999/cm/pos-integrator.git#~0.0.7 --save  
+bower install git+ssh://git@po.toolbox:7999/cm/pos-integrator.git#~0.0.8 --save  
 ```
 Add a `<script>` to your `index.html`:
 
