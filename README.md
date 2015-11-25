@@ -7,7 +7,6 @@ The Post Office POS Integrator Component is a Bower component that provides a wr
 --------------
 * Write methods for microservice to listen for gravity messages
 * Write unit tests to get coverage above 80%
-* Write a build pipeline
 
 
 ## Install
@@ -208,3 +207,45 @@ Below are example incoming messages that you may need to mock. These are for mes
 ```
 {  "messageType":" CollectInformationRequest",  "correlationID":"123456789",  *** Common fields ***  "details": {    "collectionType":"VATCustomerInfo"  }}
 ```
+
+## Contributing
+
+#### THE DEVELOPMENT BRANCH FOR THIS PROJECT IS: dev
+
+Please ask first before embarking on any significant contribution (e.g. implementing features or refactoring code), otherwise you risk spending a lot of time working on something that might not be merged into the project.
+
+Adhering to the following process is the best way to get your work included in the project:
+
+1. Clone the project:
+ 
+	```
+	git clone ssh://git@po.toolbox:7999/cm/pos-integrator.git
+	```
+
+2. Make sure you have the latest code by getting changes from upstream:
+
+	```
+	git fetch
+	git checkout dev
+	git pull upstream dev
+	```
+	
+3. Create a new topic branch (off the **dev** branch) to contain your feature, change, or fix:
+
+	```
+	git checkout -b topic-branch-name
+	```
+4. Commit your changes in logical chunks and commit them to your local branch.
+
+	```
+	git add .
+	git commit -m "Your Commit Message"
+	```
+6. Once you have finished your contribution finally push your topic branch to Stash.
+
+	```
+	git push --set-upstream origin topic-branch-name
+	```
+7. Open a Pull Request on Stash with a clear title and description against the **dev** branch. Please view the linked docs to [create a pull request](https://confluence.atlassian.com/stash/using-pull-requests-in-stash-299570995.html#UsingpullrequestsinStash-Creatingapullrequest)
+    
+Once a Pull Request has been submitted it will be reviewed by the project owners, requests will be merged if they meet the standards of the project (e.g. Coding conventions and test coverage). The project owners may also review your code and return comments for improvement before your code is ready to be merged into the project.
