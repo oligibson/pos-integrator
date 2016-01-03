@@ -85,7 +85,7 @@ describe('Synchronous Messages to Gravity', function () {
 
 describe('pos.getWeight', function () {
 
-    var pos, provider, router;
+    var pos, provider, router, returnedMessage;
 
     // Get the provider
     beforeEach(module('pos.integrator', function ($posProvider,$routerProvider) {
@@ -101,22 +101,25 @@ describe('pos.getWeight', function () {
         console.info = spyOn(console, 'info')
     }));
 
-    it('should send an message to the console in development mode and create a correlation id', function(){
+    beforeEach(function(done){
         pos.getWeight(function(err, res){
-            if(err){console.log(err);}
+            if(err){
+                console.log(err);
+            }
+            returnedMessage = res;
+            done();
         });
+    });
+
+    it('should send an message to the console in development mode and create a correlation id', function(){
         expect(console.info.calls.mostRecent().args[1].messageType).toEqual("ReadScaleRequest");
         expect(console.info.calls.mostRecent().args[1].correlationID).toBeDefined();
     });
 
 
     it('Should receive a response from POS Controller mock in development mode', function(){
-        pos.getWeight(function(err, res){
-            if(err){console.log(err);}
-            expect(res.messageType).toEqual("ReadScaleResponse");
-            expect(res.details.status).toEqual("success");
-            done();
-        });
+        expect(returnedMessage.messageType).toEqual("ReadScaleResponse");
+        expect(returnedMessage.details.status).toEqual("success");
     });
 
 });
@@ -125,7 +128,7 @@ describe('pos.getWeight', function () {
 
 describe('pos.print', function () {
 
-    var pos, provider, router;
+    var pos, provider, router, returnedMessage;
     var tasks = [{
         "Type":"printLine",
         "Text":"Hello World 1"
@@ -145,21 +148,22 @@ describe('pos.print', function () {
         console.info = spyOn(console, 'info')
     }));
 
-    it('should send an message to the console in development mode and create a correlation id', function(){
+    beforeEach(function(done){
         pos.print("Receipt", true, false, tasks, function(err, res){
             if(err){console.log(err);}
+            returnedMessage = res;
+            done();
         });
+    });
+
+    it('should send an message to the console in development mode and create a correlation id', function(){
         expect(console.info.calls.mostRecent().args[1].messageType).toEqual("PrintJobRequest");
         expect(console.info.calls.mostRecent().args[1].correlationID).toBeDefined();
     });
 
 
     it('Should receive a response from POS Controller mock in development mode', function(){
-        pos.print("Receipt", true, false, tasks, function(err, res){
-            if(err){console.log(err);}
-            expect(res.messageType).toEqual("PrintJobResponse");
-            expect(res.details.status).toEqual("success");
-            done();
-        });
+        expect(returnedMessage.messageType).toEqual("PrintJobResponse");
+        expect(returnedMessage.details.status).toEqual("success");
     });
 });
