@@ -3,11 +3,10 @@
 // These tests are examples to demo how you may implement testing of bower component injection etc, these will likely fail
 
 describe('Init', function () {
-    var provider, initSpy, outgoingSpy;
+    var provider, initSpy;
 
     // Get the provider
     beforeEach(module('pos.integrator', function ($posProvider) {
-        // This callback is only called during instantiation
         provider = $posProvider;
     }));
 
@@ -16,7 +15,6 @@ describe('Init', function () {
 
     beforeEach(function(done){
         initSpy = spyOn(provider, 'init');
-        //outgoingSpy = spyOn(parent, 'postMessage');
         done();
     });
 
@@ -29,9 +27,6 @@ describe('Init', function () {
         expect(initSpy).toHaveBeenCalled();
     });
 
-    //it('send a message to pos controller to show completed initialisation', function () {
-    //    expect(outgoingSpy).toHaveBeenCalled();
-    //});
 });
 
 describe('Synchronous Messages to Gravity', function () {
@@ -40,7 +35,6 @@ describe('Synchronous Messages to Gravity', function () {
 
     // Get the provider
     beforeEach(module('pos.integrator', function ($posProvider,$routerProvider) {
-        // This callback is only called during instantiation
         provider = $posProvider;
         router = $routerProvider;
     }));
@@ -89,7 +83,6 @@ describe('pos.getWeight', function () {
 
     // Get the provider
     beforeEach(module('pos.integrator', function ($posProvider,$routerProvider) {
-        // This callback is only called during instantiation
         provider = $posProvider;
         router = $routerProvider;
     }));
@@ -121,7 +114,6 @@ describe('pos.getWeight', function () {
         expect(returnedMessage.messageType).toEqual("ReadScaleResponse");
         expect(returnedMessage.details.status).toEqual("success");
     });
-
 });
 
 
