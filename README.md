@@ -1,13 +1,7 @@
-# Post Office POS Integrator Component
+# POS Integrator Component
 --------------------------------------
 
-The Post Office POS Integrator Component is a Bower component that provides a wrapper for the HTML5 iFrame messaging to the POS Controller.
-
-## Still To DO
---------------
-* Write methods for microservice to listen for gravity messages
-* Write unit tests to get coverage above 80%
-
+The POS Integrator Component is a Angular module that provides a wrapper for the HTML5 iFrame messaging for Toshiba Point Of Sale Systems.
 
 ## Install
 ----------
@@ -15,7 +9,7 @@ The Post Office POS Integrator Component is a Bower component that provides a wr
 You can install this package with bower.
 
 ```
-bower install git+ssh://git@po.toolbox:7999/cm/pos-integrator.git#~0.0.8 --save  
+bower install git+ssh://git@github.com:oligibson/pos-integrator.git#~0.0.8 --save
 ```
 Add a `<script>` to your `index.html`:
 
@@ -85,7 +79,15 @@ Sends a message to the POS Controller to print a receipt or document. The print 
 	"Type":"printLine",
 	"Text":"Hello World 1"
 },
-{	"Type":"printImage",    "ImageNumber":"2"},{	"Type":"printBarcode",    "BarcodeType":"CODE128",    "BarcodeValue":"1234567890"}]
+{
+	"Type":"printImage",
+    "ImageNumber":"2"
+},
+{
+	"Type":"printBarcode",
+    "BarcodeType":"CODE128",
+    "BarcodeValue":"1234567890"
+}]
 	```
 
 * `callback` - **Function** - Must take `error` and `response` parameters.
@@ -94,7 +96,15 @@ Below is an example call to `$pos.print()`.
 
 
 ```
-var tasks = [{               "Type":"printLine",               "Text":"Hello World 1"             },       		{         		"Type":"printImage",         		"ImageNumber":"2"       		}];       		
+var tasks = [{
+               "Type":"printLine",
+               "Text":"Hello World 1"
+             },
+       		{
+         		"Type":"printImage",
+         		"ImageNumber":"2"
+       		}];
+       		
 $pos.print("Receipt", true, false, tasks, function(error, response){
 	if (!err) {
     	console.log(response);
@@ -181,31 +191,63 @@ Below are example incoming messages that you may need to mock. These are for mes
 #### Sign On
 
 ```
-{  "messageType":"SignOn",  *** Common fields ***  "details": {    "welshLanguage":"false"   }}
+{
+  "messageType":"SignOn",
+  *** Common fields ***
+  "details": {
+    "welshLanguage":"false" 
+  }
+}
 ```
 
 #### Sign Off
 
 ```
-{  "messageType":"SignOff",  *** Common fields ***}
+{
+  "messageType":"SignOff",
+  *** Common fields ***
+}
+
 ```
 
 #### Barcode Scan
 
 ```
-{  "messageType":"Barcode",  *** Common fields ***  "details": {    "barcodeType":" CODE128",    "barcodeData":"1234567890"  }}
+{
+  "messageType":"Barcode",
+  *** Common fields ***
+  "details": {
+    "barcodeType":" CODE128",
+    "barcodeData":"1234567890"
+  }
+}
 ```
 
 #### Status Message
 
 ```
-{  "messageType":" StatusMessage",  *** Common fields ***  "details": {    "statusCode":"processing",    "text":"Processing…",    "canRequestCancel":"false"  }}
+{
+  "messageType":" StatusMessage",
+  *** Common fields ***
+  "details": {
+    "statusCode":"processing",
+    "text":"Processing…",
+    "canRequestCancel":"false"
+  }
+}
 ```
 
 #### Collect Information Request
 
 ```
-{  "messageType":" CollectInformationRequest",  "correlationID":"123456789",  *** Common fields ***  "details": {    "collectionType":"VATCustomerInfo"  }}
+{
+  "messageType":" CollectInformationRequest",
+  "correlationID":"123456789",
+  *** Common fields ***
+  "details": {
+    "collectionType":"VATCustomerInfo"
+  }
+}
 ```
 
 ## Contributing
@@ -219,7 +261,7 @@ Adhering to the following process is the best way to get your work included in t
 1. Clone the project:
  
 	```
-	git clone ssh://git@po.toolbox:7999/cm/pos-integrator.git
+	git clone ssh://git@github.com:oligibson/pos-integrator.git
 	```
 
 2. Make sure you have the latest code by getting changes from upstream:
@@ -246,6 +288,6 @@ Adhering to the following process is the best way to get your work included in t
 	```
 	git push --set-upstream origin topic-branch-name
 	```
-7. Open a Pull Request on Stash with a clear title and description against the **dev** branch. Please view the linked docs to [create a pull request](https://confluence.atlassian.com/stash/using-pull-requests-in-stash-299570995.html#UsingpullrequestsinStash-Creatingapullrequest)
+7. Open a Pull Request with a clear title and description against the **dev** branch.
     
 Once a Pull Request has been submitted it will be reviewed by the project owners, requests will be merged if they meet the standards of the project (e.g. Coding conventions and test coverage). The project owners may also review your code and return comments for improvement before your code is ready to be merged into the project.
